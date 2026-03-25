@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Calculadora Profesional</title>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #1e1e2f, #2a2a40);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .app {
+        background: #2d2d44;
+        border-radius: 20px;
+        width: 340px;
+        padding: 20px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+    }
+
+    .pantalla {
+        background: #000;
+        color: #00ffcc;
+        font-size: 32px;
+        text-align: right;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        overflow-x: auto;
+    }
+
+    .historial {
+        color: #aaa;
+        font-size: 14px;
+        height: 40px;
+        overflow-y: auto;
+        margin-bottom: 10px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    button {
+        padding: 18px;
+        font-size: 18px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        background: #3b3b5c;
+        color: white;
+        transition: 0.2s;
+    }
+
+    button:hover {
+        background: #57578a;
+    }
+
+    .op { background: #ff9500; }
+    .igual { background: #28a745; grid-column: span 2; }
+    .clear { background: #dc3545; }
+</style>
+</head>
+
+<body>
+
+<div class="app">
+    <div class="historial" id="historial"></div>
+    <div class="pantalla" id="pantalla">0</div>
+
+    <div class="grid">
+        <button class="clear" onclick="limpiar()">C</button>
+        <button onclick="borrar()">⌫</button>
+        <button onclick="raiz()">√</button>
+        <button class="op" onclick="agregar('/')">/</button>
+
+        <button onclick="agregar('7')">7</button>
+        <button onclick="agregar('8')">8</button>
+        <button onclick="agregar('9')">9</button>
+        <button class="op" onclick="agregar('*')">*</button>
+
+        <button onclick="agregar('4')">4</button>
+        <button onclick="agregar('5')">5</button>
+        <button onclick="agregar('6')">6</button>
+        <button class="op" onclick="agregar('-')">-</button>
+
+        <button onclick="agregar('1')">1</button>
+        <button onclick="agregar('2')">2</button>
+        <button onclick="agregar('3')">3</button>
+        <button class="op" onclick="agregar('+')">+</button>
+
+        <button onclick="agregar('0')">0</button>
+        <button onclick="agregar('.')">.</button>
+        <button onclick="porcentaje()">%</button>
+        <button class="igual" onclick="calcular()">=</button>
+    </div>
+</div>
+
+<script>
+let pantalla = document.getElementById("pantalla");
+let historial = document.getElementById("historial");
+
+function agregar(valor) {
+    if (pantalla.innerText === "0") {
+        pantalla.innerText = valor;
+    } else {
+        pantalla.innerText += valor;
+    }
+}
+
+function limpiar() {
+    pantalla.innerText = "0";
+}
+
+function borrar() {
+    pantalla.innerText = pantalla.innerText.slice(0, -1) || "0";
+}
+
+function calcular() {
+    try {
+        let expresion = pantalla.innerText;
+        let resultado = eval(expresion);
+        historial.innerText = expresion + " =";
+        pantalla.innerText = resultado;
+    } catch {
+        pantalla.innerText = "Error";
+    }
+}
+
+function raiz() {
+    try {
+        let valor = eval(pantalla.innerText);
+        historial.innerText = "√(" + valor + ")";
+        pantalla.innerText = Math.sqrt(valor);
+    } catch {
+        pantalla.innerText = "Error";
+    }
+}
+
+function porcentaje() {
+    pantalla.innerText = eval(pantalla.innerText) / 100;
+}
+
+// Soporte de teclado
+document.addEventListener("keydown", function(e) {
+    if (!isNaN(e.key) || "+-*/.".includes(e.key)) {
+        agregar(e.key);
+    } else if (e.key === "Enter") {
+        calcular();
+    } else if (e.key === "Backspace") {
+        borrar();
+    } else if (e.key === "Escape") {
+        limpiar();
+    }
+});
+</script>
+
+</body>
+</html>
