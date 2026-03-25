@@ -132,6 +132,14 @@ function calculate() {
 
 
 
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -285,3 +293,243 @@ function calculate() {
 </html>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Calculadora Científica</title>
+
+<style>
+body {
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: -apple-system, sans-serif;
+}
+
+.container {
+    display: flex;
+    gap: 15px;
+}
+
+.calc {
+    width: 260px;
+    background: #000;
+    border-radius: 30px;
+    padding: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+}
+
+.display {
+    color: #fff;
+    font-size: 32px;
+    text-align: right;
+    margin-bottom: 15px;
+    overflow-x: auto;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+button {
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.num { background: #333; color: #fff; }
+.op { background: #ff9f0a; color: #fff; }
+.func { background: #a5a5a5; color: #000; }
+.sci { background: #1c1c1e; color: #0ff; }
+
+.zero {
+    grid-column: span 2;
+    border-radius: 25px;
+}
+
+/* HISTORIAL */
+.history {
+    width: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+    background: #111;
+    color: #0f0;
+    padding: 10px;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.history h3 {
+    margin-top: 0;
+    text-align: center;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="calc">
+    <div id="display" class="display">0</div>
+
+    <div class="buttons">
+        <button class="func" onclick="clearDisplay()">AC</button>
+        <button class="func" onclick="toggleSign()">±</button>
+        <button class="func" onclick="percent()">%</button>
+        <button class="op" onclick="add('/')">÷</button>
+        <button class="sci" onclick="sqrt()">√</button>
+
+        <button class="sci" onclick="sin()">sin</button>
+        <button class="sci" onclick="cos()">cos</button>
+        <button class="sci" onclick="tan()">tan</button>
+        <button class="op" onclick="add('*')">×</button>
+        <button class="sci" onclick="square()">x²</button>
+
+        <button class="num" onclick="add('7')">7</button>
+        <button class="num" onclick="add('8')">8</button>
+        <button class="num" onclick="add('9')">9</button>
+        <button class="op" onclick="add('-')">−</button>
+        <button class="sci" onclick="log()">log</button>
+
+        <button class="num" onclick="add('4')">4</button>
+        <button class="num" onclick="add('5')">5</button>
+        <button class="num" onclick="add('6')">6</button>
+        <button class="op" onclick="add('+')">+</button>
+        <button class="sci" onclick="add(Math.PI)">π</button>
+
+        <button class="num" onclick="add('1')">1</button>
+        <button class="num" onclick="add('2')">2</button>
+        <button class="num" onclick="add('3')">3</button>
+        <button class="op" onclick="calculate()">=</button>
+        <button class="sci" onclick="exp()">exp</button>
+
+        <button class="num zero" onclick="add('0')">0</button>
+        <button class="num" onclick="add('.')">.</button>
+    </div>
+</div>
+
+<div class="history" id="history">
+    <h3>Historial</h3>
+</div>
+
+</div>
+
+<script>
+let display = document.getElementById("display");
+let history = document.getElementById("history");
+
+function add(value) {
+    if (display.innerText === "0") {
+        display.innerText = value;
+    } else {
+        display.innerText += value;
+    }
+}
+
+function clearDisplay() {
+    display.innerText = "0";
+}
+
+function toggleSign() {
+    display.innerText = (parseFloat(display.innerText) * -1).toString();
+}
+
+function percent() {
+    display.innerText = (parseFloat(display.innerText) / 100).toString();
+}
+
+function calculate() {
+    try {
+        let exp = display.innerText.replace(/÷/g, "/").replace(/×/g, "*");
+
+        let result = Function("return " + exp)();
+
+        addHistory(exp + " = " + result);
+        display.innerText = result;
+    } catch {
+        display.innerText = "Error";
+    }
+}
+
+/* FUNCIONES CIENTÍFICAS */
+function sqrt() {
+    let val = Math.sqrt(parseFloat(display.innerText));
+    addHistory("√(" + display.innerText + ") = " + val);
+    display.innerText = val;
+}
+
+function square() {
+    let val = Math.pow(parseFloat(display.innerText), 2);
+    addHistory(display.innerText + "² = " + val);
+    display.innerText = val;
+}
+
+function sin() {
+    let val = Math.sin(parseFloat(display.innerText));
+    addHistory("sin(" + display.innerText + ") = " + val);
+    display.innerText = val;
+}
+
+function cos() {
+    let val = Math.cos(parseFloat(display.innerText));
+    addHistory("cos(" + display.innerText + ") = " + val);
+    display.innerText = val;
+}
+
+function tan() {
+    let val = Math.tan(parseFloat(display.innerText));
+    addHistory("tan(" + display.innerText + ") = " + val);
+    display.innerText = val;
+}
+
+function log() {
+    let val = Math.log10(parseFloat(display.innerText));
+    addHistory("log(" + display.innerText + ") = " + val);
+    display.innerText = val;
+}
+
+function exp() {
+    let val = Math.exp(parseFloat(display.innerText));
+    addHistory("exp(" + display.innerText + ") = " + val);
+    display.innerText = val;
+}
+
+/* HISTORIAL */
+function addHistory(text) {
+    let p = document.createElement("p");
+    p.innerText = text;
+    history.appendChild(p);
+}
+</script>
+
+</body>
+</html>
